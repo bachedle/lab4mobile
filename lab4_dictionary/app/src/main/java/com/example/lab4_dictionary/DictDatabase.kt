@@ -18,7 +18,7 @@ class DictDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         val createTable = "CREATE TABLE $TABLE_NAME ($COLUMN_WORD TEXT PRIMARY KEY, $COLUMN_DEFINITION TEXT)"
         db.execSQL(createTable)
 
-        // Insert sample data
+        // Insert sample data safely
         insertSampleData(db)
     }
 
@@ -29,15 +29,21 @@ class DictDatabase(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
 
     private fun insertSampleData(db: SQLiteDatabase) {
         val sampleData = listOf(
-            "apple" to "A fruit that is typically red or green.",
-            "banana" to "A long, curved fruit that is yellow.",
-            "cat" to "A small domesticated animal.",
-            "dog" to "A loyal pet that barks.",
-            "elephant" to "A large animal with a trunk."
+            "guitar" to "A musical instrument with strings.",
+            "mountain" to "A large natural elevation of the earth's surface.",
+            "ocean" to "A vast body of salt water.",
+            "robot" to "A machine capable of carrying out complex actions.",
+            "sunflower" to "A tall plant with a large yellow flower."
         )
 
+        val insertSQL = "INSERT INTO $TABLE_NAME ($COLUMN_WORD, $COLUMN_DEFINITION) VALUES (?, ?)"
+        val stmt = db.compileStatement(insertSQL)
+
         sampleData.forEach { (word, definition) ->
-            db.execSQL("INSERT INTO $TABLE_NAME ($COLUMN_WORD, $COLUMN_DEFINITION) VALUES ('$word', '$definition')")
+            stmt.clearBindings()
+            stmt.bindString(1, word)
+            stmt.bindString(2, definition)
+            stmt.executeInsert()
         }
     }
 
