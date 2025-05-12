@@ -1,18 +1,15 @@
 package com.example.lab4_movies
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import MovieDataClass
 import com.example.lab4_movies.databinding.FragmentMovieDetailsBinding
+import com.example.lab4_movies.MovieDataClass
 
-class MovieDetailsFragment : Fragment() {
+class MovieDetails : Fragment() {
     private var _binding: FragmentMovieDetailsBinding? = null
     private val binding get() = _binding!!
 
@@ -27,32 +24,18 @@ class MovieDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupBackButton()
-
-        val movie = arguments?.getSerializable("movie") as? Movie
+        val movie = arguments?.getSerializable("movie") as? MovieDataClass
         movie?.let { displayMovieDetails(it) }
     }
 
-    private fun setupBackButton() {
-        binding.backButton.setOnClickListener {
-            findNavController().popBackStack()
-        }
-    }
-
-    private fun displayMovieDetails(movie: Movie) {
+    private fun displayMovieDetails(movie: MovieDataClass) {
         binding.apply {
             movieTitle.text = movie.title
-            movieReleaseDate.text = "Release Date: ${movie.releaseDate}"
-            movieRating.text = "Rating: ${movie.voteAverage}/10"
-            movieOverview.text = movie.overview
+            movieDescription.text = movie.description
 
             Glide.with(this@MovieDetailsFragment)
-                .load(movie.posterUrl)
+                .load(movie.imageRes)
                 .into(moviePoster)
-
-            Glide.with(this@MovieDetailsFragment)
-                .load(movie.backdropUrl)
-                .into(movieBackdrop)
         }
     }
 
